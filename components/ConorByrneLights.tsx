@@ -20,10 +20,10 @@ const ConorByrneLights = () => {
         { label: "G2-L", position: { x: 100, y: y3 } },
         { label: "G2-R", position: { x: 600, y: y3 } },
         { label: "G3-1", position: { x: 50, y: y4 } },
-        { label: "G3-3", position: { x: 350, y: y4 } },
-        { label: "G3-5", position: { x: 650, y: y4 } },
         { label: "G4-2", position: { x: 200, y: y4 } },
+        { label: "G3-3", position: { x: 350, y: y4 } },
         { label: "G4-4", position: { x: 500, y: y4 } },
+        { label: "G3-5", position: { x: 650, y: y4 } },
     ];
 
     // Use the useSocket hook to get the fixture data
