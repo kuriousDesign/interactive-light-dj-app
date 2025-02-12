@@ -4,12 +4,14 @@ import { Server as SocketIOServer } from 'socket.io';
 import dgram from 'dgram';
 
 // UDP Settings
-const UDP_PORT = 9999;
-const UDP_HOST = '0.0.0.0'; // Listen on all available interfaces
+const UDP_PORT = 9999;               // Port for receiving UDP messages
+const UDP_HOST = '0.0.0.0';          // Listen on all available interfaces
+const UDP_SEND_PORT = 9998;          // Additional UDP port for sending data
+const UDP_SEND_HOST = '127.0.0.1';  // Host for sending data (adjust as needed)
 
 // Socket.IO Settings
-const PORT = 5000;
-const IP_ADDRESS = '127.0.0.1'; //'192.168.20.69';
+const PORT = 5000;                   // Port for Socket.IO server
+const IP_ADDRESS = '127.0.0.1';      // Local IP for the Socket.IO server
 
 // Create an instance of Express
 const app = express();
@@ -18,7 +20,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new SocketIOServer(server, {
     cors: {
-        origin: '*', // Adjust this to your frontend URL (e.g., 'http://localhost:3000')
+        origin: '*',                // Adjust this to your frontend URL if needed
         methods: ['GET', 'POST'],
     },
 });
@@ -40,11 +42,11 @@ function generateFixtureData() {
     return fixtures;
 }
 
-function parseFixtureData(bytes:Buffer) {
+// Function to parse incoming UDP bytes into fixture data
+function parseFixtureData(bytes) {
     const fixtures = [];
     for (let i = 0; i < fixtureCount; i++) {
         const fixtureBytes = bytes.slice(i * 4, i * 4 + 4); // Each fixture has 4 bytes (R, G, B, W)
-
         const r = fixtureBytes[0];
         const g = fixtureBytes[1];
         const b = fixtureBytes[2];
@@ -60,18 +62,38 @@ io.on('connection', (socket) => {
 
     // Send fixture data every ~150ms
     const fixtureDataInterval = setInterval(() => {
-        // const fixtureData = generateFixtureData();
+         //const fixtureData = generateFixtureData();
         //socket.emit('data', { message: fixtureData });
     }, 150); // Send data every 150ms
 
     socket.onAny((event, ...args) => {
-        console.log(`Received event: ${event}`, args);
+        // console.log(`Received event: ${event}`, args);
     });
 
     // Listen for newData event and emit it to all clients
     socket.on('newData', (newData) => {
         console.log('Received new data:', newData);
         io.emit('data', { message: newData });
+    });
+
+    // Listen for buttonPress event and handle it
+    socket.on('buttonPress', (data) => {
+        if (data.controlType === 'groupSet') {
+            console.log('Group button pressed:', data.id, data.color);
+
+            // Send button press data via UDP to additional port
+            const message = Buffer.from(JSON.stringify(data));
+
+            const udpClient = dgram.createSocket('udp4');
+            udpClient.send(message, 0, message.length, UDP_SEND_PORT, UDP_SEND_HOST, (err) => {
+                if (err) {
+                    console.error('Error sending UDP message:', err);
+                } else {
+                    console.log(`Sent UDP message to ${UDP_SEND_HOST}:${UDP_SEND_PORT}`);
+                }
+                udpClient.close();
+            });
+        }
     });
 
     // Handle disconnection
@@ -81,11 +103,9 @@ io.on('connection', (socket) => {
     });
 });
 
-
-// Start the server on 0.0.0.0 (accessible from other devices)
-
+// Start the Socket.IO server
 server.listen(PORT, IP_ADDRESS, () => {
-    //console.log(`Socket.IO server running at http://${LOCAL_IP}:${PORT}`);
+    console.log(`Socket.IO server running at http://${IP_ADDRESS}:${PORT}`);
 });
 
 // Create a UDP Listener
@@ -96,11 +116,11 @@ udpServer.on('message', (msg, rinfo) => {
         console.warn(`Ignoring incomplete UDP message (${msg.length} bytes) from ${rinfo.address}:${rinfo.port}`);
         return; // Ignore messages that are not exactly 44 bytes
     }
-    //console.log(`Received UDP message from ${rinfo.address}:${rinfo.port} - ${msg}`);
+    //console.log(`Received UDP message from ${rinfo.address}:${rinfo.port}`);
     const fixtureData = parseFixtureData(msg);
+    //console.log('Parsed fixture data:', fixtureData);
     // Forward UDP data to all connected Socket.IO clients
-    //socket.emit('data', { message: fixtureData });
-    io.emit('data', { 'message': fixtureData });
+    io.emit('data', { message: fixtureData });
 });
 
 udpServer.on('listening', () => {
