@@ -67,7 +67,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const SERVER_URL = process.env.NEXT_PUBLIC_SOCKET_SERVER_URL || 'http://192.168.0.48:5000';
+const SERVER_URL = process.env.NEXT_PUBLIC_SOCKET_SERVER_URL || 'http://localhost:5000';
 
 export default function SocketProvider({ children }: Props) {
   const socketRef = useRef<Socket | null>(null);

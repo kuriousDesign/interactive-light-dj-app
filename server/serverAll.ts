@@ -7,6 +7,10 @@ import dgram from 'dgram';
 const UDP_PORT = 9999;
 const UDP_HOST = '0.0.0.0'; // Listen on all available interfaces
 
+// Socket.IO Settings
+const PORT = 5000;
+const IP_ADDRESS = '127.0.0.1'; //'192.168.20.69';
+
 // Create an instance of Express
 const app = express();
 
@@ -79,8 +83,8 @@ io.on('connection', (socket) => {
 
 
 // Start the server on 0.0.0.0 (accessible from other devices)
-const PORT = 5000;
-server.listen(PORT, '192.168.0.48', () => {
+
+server.listen(PORT, IP_ADDRESS, () => {
     //console.log(`Socket.IO server running at http://${LOCAL_IP}:${PORT}`);
 });
 

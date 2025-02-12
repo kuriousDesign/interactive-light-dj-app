@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { SocketContext } from '@/contexts/SocketProvider'; // Adjust path to match your project structure
 import { FixtureCfg } from '@/types/fixture'; // Adjust to your fixture data type
 import FixtureComponent from './FixtureComponent';
+import FixtureControlRGBW from './FixtureControlRGBW';
 
 
 const ConorByrneLights = () => {
@@ -34,23 +35,27 @@ const ConorByrneLights = () => {
 
     //console.log('ConorByrneLights fixtureData:', fixtureData);
 
-
+    let fixtures = null;
     if (!fixtureData) {
         // Handle the case where fixtureData is not available yet
-        return <div>Loading fixture data...</div>;
+        //return <div>Loading fixture data...</div>;
+    } else {
+        fixtures = fixtureCfgs.map((cfg, index) => (
+            <FixtureComponent
+                key={index}
+                data={fixtureData[index]} // Red
+                cfg={cfg}
+            />
+        ));
     }
 
-    const fixtures = fixtureCfgs.map((cfg, index) => (
-        <FixtureComponent
-            key={index}
-            data={fixtureData[index]} // Red
-            cfg={cfg}
-        />
-    ));
+
 
     return (
         <div className="relative flex h-screen w-screen">
             {fixtures}
+            <FixtureControlRGBW />
+            Your MOM
         </div>
     );
 };
