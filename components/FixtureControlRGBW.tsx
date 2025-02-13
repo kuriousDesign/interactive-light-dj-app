@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Wheel from "@uiw/react-color-wheel";
 import ShadeSlider from '@uiw/react-color-shade-slider';
-import { ColorResult, RgbColor, HsvaColor, hsvaToRgba } from '@uiw/color-convert';
+import { ColorResult, RgbColor, hsvaToRgba } from '@uiw/color-convert';
 import { useContext } from 'react';
 import { SocketContext } from '@/contexts/SocketProvider';
 
@@ -28,7 +28,7 @@ const FixtureControlRGBW = () => {
 
   };
 
-  const handleShadeChange = (shade:HsvaColor) => {
+  const handleShadeChange = (shade:{v:number}) => {
     //rgb.r
     // const rgb = `rgb(${hsv.r}, ${hsv.g}, ${hsv.b})`;
     console.log('v:', shade.v);
