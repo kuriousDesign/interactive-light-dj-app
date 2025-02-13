@@ -13,6 +13,7 @@ const ConorByrneLights = () => {
     const y2 = 150;
     const y3 = 0;
     const y4 = 500;
+    const y5 = 700;
     const fixtureCfgs:FixtureCfg[] = [
         { label: "G1-LT", position: { x: 200, y: y1 } },
         { label: "G1-LB", position: { x: 200, y: y2 } },
@@ -27,6 +28,13 @@ const ConorByrneLights = () => {
         { label: "G3-5", position: { x: 650, y: y4 } },
     ];
 
+    const groupsControlsCfgs:FixtureCfg[] = [
+        { label: "G1", position: { x: 25, y: y5 } },
+        { label: "G2", position: { x: 200, y: y5 } },
+        { label: "G3", position: { x: 375, y: y5 } },
+        { label: "G4", position: { x: 550, y: y5 } },
+    ]
+
     // Use the useSocket hook to get the fixture data
     //const { fixtureData } = useSocket();
     // const { fixtureData } = useSocketContext();
@@ -36,6 +44,7 @@ const ConorByrneLights = () => {
     //console.log('ConorByrneLights fixtureData:', fixtureData);
 
     let fixtures = null;
+    let groupControls = null;
     if (!fixtureData) {
         // Handle the case where fixtureData is not available yet
         //return <div>Loading fixture data...</div>;
@@ -47,15 +56,23 @@ const ConorByrneLights = () => {
                 cfg={cfg}
             />
         ));
+
+        groupControls = groupsControlsCfgs.map((cfg, index) => (
+            <FixtureControlRGBW
+                key={index}
+                id = {index}
+                controlType = {'groupSet'}
+                cfg={cfg}
+            />
+        ));
     }
 
-
-
     return (
-        <div className="relative flex h-screen w-screen">
-            {fixtures}
-            <FixtureControlRGBW />
-            Your MOM
+        <div className="w-full h-full bg-white">
+            <div className="relative flex h-screen w-screen">
+                {fixtures}
+                {groupControls}
+            </div>
         </div>
     );
 };
