@@ -40,6 +40,8 @@ const ConorByrneLights = () => {
     // const { fixtureData } = useSocketContext();
     const sc = useContext(SocketContext); // Get fixture data from context
     const fixtureData = sc ? sc.fixtureData : null;
+    const scene = sc ? sc.scene : null;
+    console.log('sc:', scene);
 
     //console.log('ConorByrneLights fixtureData:', fixtureData);
 
@@ -71,6 +73,9 @@ const ConorByrneLights = () => {
         <div className="w-full h-full bg-white">
             <div className="relative flex h-screen w-screen">
                 {fixtures}
+                <div className="absolute top-5 left-0 w-full h-6 text-black bg-purple-500 text-center">
+                    scene: {scene}
+                </div>
                 {groupControls}
             </div>
         </div>

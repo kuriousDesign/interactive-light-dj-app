@@ -7,11 +7,13 @@ import { FixtureData } from '@/types/fixture';
 export const SocketContext = createContext<{
   socket: Socket | null;
   fixtureData: FixtureData[] | null;
+  scene: string | null;
   setFixtureData: React.Dispatch<React.SetStateAction<FixtureData[] | null>>;
   sendEvent: (event: string, data: any) => void;
 }>({
   socket: null,
   fixtureData: null,
+  scene: null,
   setFixtureData: () => {},
   sendEvent: () => {},
 });
@@ -25,6 +27,7 @@ const SERVER_URL = process.env.NEXT_PUBLIC_SOCKET_SERVER_URL || 'http://localhos
 export default function SocketProvider({ children }: Props) {
   const socketRef = useRef<Socket | null>(null);
   const [fixtureData, setFixtureData] = useState<FixtureData[] | null>(null);
+  const [scene, setScene] = useState<string | null>(null);
 
   useEffect(() => {
     // Initialize socket connection on first render
@@ -42,6 +45,13 @@ export default function SocketProvider({ children }: Props) {
       setFixtureData(data.message); // Update fixture data state
     });
 
+    socketRef.current.on('event', (data) => {
+      console.log('Received event:', data);
+      if (data.event_type === 'scene') {
+        setScene(data.name); // Update fixture data state
+      }
+    });
+
     return () => {
       socketRef.current?.disconnect();
     };
@@ -57,7 +67,7 @@ export default function SocketProvider({ children }: Props) {
   };
 
   return (
-    <SocketContext.Provider value={{ socket: socketRef.current, fixtureData, setFixtureData, sendEvent }}>
+    <SocketContext.Provider value={{ socket: socketRef.current, fixtureData, scene, setFixtureData, sendEvent }}>
       {children}
     </SocketContext.Provider>
   );

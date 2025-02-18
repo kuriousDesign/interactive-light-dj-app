@@ -4,9 +4,9 @@ import { Server as SocketIOServer } from 'socket.io';
 import dgram from 'dgram';
 
 // UDP Settings
-const UDP_PORT = 9999;               // Port for receiving UDP messages
+const UDP_PORT = 59999;               // Port for receiving UDP messages
 const UDP_HOST = '0.0.0.0';          // Listen on all available interfaces
-const UDP_SEND_PORT = 9998;          // Additional UDP port for sending data
+const UDP_SEND_PORT = 59998;          // Additional UDP port for sending data
 const UDP_SEND_HOST = '127.0.0.1';  // Host for sending data (adjust as needed)
 
 // Socket.IO Settings
@@ -112,16 +112,36 @@ server.listen(PORT, IP_ADDRESS, () => {
 const udpServer = dgram.createSocket('udp4');
 
 udpServer.on('message', (msg, rinfo) => {
-    if (msg.length !== 44) {
+    if (msg.length !== 46) {
         console.warn(`Ignoring incomplete UDP message (${msg.length} bytes) from ${rinfo.address}:${rinfo.port}`);
         return; // Ignore messages that are not exactly 44 bytes
     }
-    //console.log(`Received UDP message from ${rinfo.address}:${rinfo.port}`);
-    const fixtureData = parseFixtureData(msg);
-    //console.log('Parsed fixture data:', fixtureData);
-    // Forward UDP data to all connected Socket.IO clients
-    io.emit('data', { message: fixtureData });
+
+    // Extract the first two bytes (prefix)
+    const prefix = msg.slice(0, 2).toString('utf8');
+
+    // Extract the remaining 44 bytes
+    const dataPayload = msg.slice(2);
+
+    if (prefix === 'FD') {
+        const fixtureData = parseFixtureData(dataPayload);
+        io.emit('data', { message: fixtureData });
+    } else if (prefix === 'EV') {
+        // Handle MD prefix if needed
+        try {
+            const jsonData = JSON.parse(dataPayload.toString());
+            console.log('Received event data:', jsonData);
+            io.emit('event', jsonData);
+        } catch (error) {
+            console.error('Error parsing event payload:', error);
+        }
+    }
+
+
+    
 });
+
+
 
 udpServer.on('listening', () => {
     const address = udpServer.address();
