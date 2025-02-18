@@ -89,7 +89,7 @@ io.on('connection', (socket) => {
                 if (err) {
                     console.error('Error sending UDP message:', err);
                 } else {
-                    console.log(`Sent UDP message to ${UDP_SEND_HOST}:${UDP_SEND_PORT}`);
+                    // console.log(`Sent UDP message to ${UDP_SEND_HOST}:${UDP_SEND_PORT}`);
                 }
                 udpClient.close();
             });
