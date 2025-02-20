@@ -1,9 +1,9 @@
 export interface Fixture {
-    vars: FixtureData;
+    vars: FixtureRGBW;
     cfg: FixtureCfg;
   }
 
-export interface FixtureData {
+export interface FixtureRGBW {
     r: number;
     g: number;
     b: number;

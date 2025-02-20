@@ -3,7 +3,7 @@
 //import useSocket from '@/hooks/useSocket'; // Import the custom hook
 import { useContext } from 'react';
 import { SocketContext } from '@/contexts/SocketProvider'; // Adjust path to match your project structure
-import { FixtureCfg } from '@/types/fixture'; // Adjust to your fixture data type
+import { FixtureCfg } from '@/../types/fixture'; // Adjust to your fixture data type
 import FixtureComponent from './FixtureComponent';
 import FixtureControlRGBW from './FixtureControlRGBW';
 

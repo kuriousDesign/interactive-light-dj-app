@@ -2,7 +2,7 @@
 
 import { createContext, useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { FixtureData } from '@/types/fixture';
+import { FixtureData } from '@libs/types/fixture';
 
 export const SocketContext = createContext<{
   socket: Socket | null;

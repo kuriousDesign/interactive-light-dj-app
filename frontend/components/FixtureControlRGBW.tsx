@@ -3,7 +3,7 @@ import Wheel from "@uiw/react-color-wheel";
 import ShadeSlider from '@uiw/react-color-shade-slider';
 import { ColorResult, hsvaToRgba } from '@uiw/color-convert';
 import { SocketContext } from '@/contexts/SocketProvider';
-import { FixtureCfg } from '@/types/fixture';
+import { FixtureCfg } from '@/../types/fixture';
 
 interface FixtureControlProps {
     id: number;

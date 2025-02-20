@@ -2,6 +2,7 @@ import express from 'express';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import dgram from 'dgram';
+import { FixtureRGBW } from '@libs/interfaces/fixture';
 
 // UDP Settings
 const UDP_PORT = 59999;               // Port for receiving UDP messages
@@ -30,7 +31,7 @@ const fixtureCount = 11;
 
 // Helper function to generate random fixture data
 function generateFixtureData() {
-    const fixtures = [];
+    const fixtures:FixtureRGBW[] = [];
     for (let i = 0; i < fixtureCount; i++) {
         fixtures.push({
             r: Math.floor(Math.random() * 256),
@@ -43,8 +44,8 @@ function generateFixtureData() {
 }
 
 // Function to parse incoming UDP bytes into fixture data
-function parseFixtureData(bytes) {
-    const fixtures = [];
+function parseFixtureData(bytes: Buffer) {  // Add ': Buffer'
+    const fixtures:FixtureRGBW[] = [];
     for (let i = 0; i < fixtureCount; i++) {
         const fixtureBytes = bytes.slice(i * 4, i * 4 + 4); // Each fixture has 4 bytes (R, G, B, W)
         const r = fixtureBytes[0];
@@ -55,6 +56,7 @@ function parseFixtureData(bytes) {
     }
     return fixtures;
 }
+
 
 // Handle Socket.IO Connections
 io.on('connection', (socket) => {
@@ -136,12 +138,7 @@ udpServer.on('message', (msg, rinfo) => {
             console.error('Error parsing event payload:', error);
         }
     }
-
-
-    
 });
-
-
 
 udpServer.on('listening', () => {
     const address = udpServer.address();

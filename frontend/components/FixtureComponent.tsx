@@ -1,4 +1,4 @@
-import { FixtureData, FixtureCfg } from '@/types/fixture';
+import { FixtureData, FixtureCfg } from '@/frontend/types/fixture';
 import React from 'react'
 interface FixtureProps {
     data: FixtureData;
