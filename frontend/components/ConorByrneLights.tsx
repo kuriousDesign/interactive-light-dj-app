@@ -29,10 +29,10 @@ const ConorByrneLights = () => {
     ];
 
     const groupsControlsCfgs:FixtureCfg[] = [
-        { label: "G1", position: { x: 25, y: y5 } },
-        { label: "G2", position: { x: 200, y: y5 } },
-        { label: "G3", position: { x: 375, y: y5 } },
-        { label: "G4", position: { x: 550, y: y5 } },
+        { label: "G1-Backs", position: { x: 25, y: y5 } },
+        { label: "G2-Curtains", position: { x: 200, y: y5 } },
+        { label: "G3-Front-1,3,5", position: { x: 375, y: y5 } },
+        { label: "G4-Front-2,4", position: { x: 550, y: y5 } },
     ]
 
     // Use the useSocket hook to get the fixture data
