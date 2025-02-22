@@ -4,6 +4,7 @@ import ConorByrneLights from "@/components/ConorByrneLights";
 
 
 export default function Home() {
+  
   return (
     <SocketProvider>
       <div className="w-full h-screen flex flex-col">

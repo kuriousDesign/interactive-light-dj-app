@@ -3,13 +3,8 @@ import Wheel from "@uiw/react-color-wheel";
 import ShadeSlider from '@uiw/react-color-shade-slider';
 import { ColorResult, hsvaToRgba } from '@uiw/color-convert';
 import { SocketContext } from '@/contexts/SocketProvider';
-import { FixtureCfg } from '@/../types/fixture';
+import { FixtureControlProps } from '@libs/interfaces/fixture';
 
-interface FixtureControlProps {
-    id: number;
-    controlType: string;
-    cfg: FixtureCfg;
-}
 
 const FixtureControlRGBW = ({ id, controlType, cfg }: FixtureControlProps) => {
     const [hsva, setHsva] = useState({ h: 214, s: 43, v: 100, a: 1 });

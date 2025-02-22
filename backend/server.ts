@@ -12,7 +12,7 @@ const UDP_SEND_HOST = '127.0.0.1';  // Host for sending data (adjust as needed)
 
 // Socket.IO Settings
 const PORT = 5000;                   // Port for Socket.IO server
-const IP_ADDRESS = '127.0.0.1';      // Local IP for the Socket.IO server
+const IP_ADDRESS = '192.168.0.149';      // Local IP for the Socket.IO server
 
 // Create an instance of Express
 const app = express();
@@ -83,6 +83,21 @@ io.on('connection', (socket) => {
         if (data.controlType === 'groupSet') {
             console.log('Group button pressed:', data.id, data.color);
 
+            // Send button press data via UDP to additional port
+            const message = Buffer.from(JSON.stringify(data));
+
+            const udpClient = dgram.createSocket('udp4');
+            udpClient.send(message, 0, message.length, UDP_SEND_PORT, UDP_SEND_HOST, (err) => {
+                if (err) {
+                    console.error('Error sending UDP message:', err);
+                } else {
+                    // console.log(`Sent UDP message to ${UDP_SEND_HOST}:${UDP_SEND_PORT}`);
+                }
+                udpClient.close();
+            });
+        }
+        else if (data.controlType === 'sceneSet') {
+            console.log('Scene button pressed:', data.id);
             // Send button press data via UDP to additional port
             const message = Buffer.from(JSON.stringify(data));
 

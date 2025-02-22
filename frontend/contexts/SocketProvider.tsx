@@ -18,46 +18,68 @@ export const SocketContext = createContext<{
   sendEvent: () => {},
 });
 
-interface Props {
-  children: React.ReactNode;
-}
+// List of possible Socket.IO server addresses
+const SERVER_URLS = [
+  'http://robot:5000', //billy's network
+  'http://127.0.0.1:5000', // localhost
+  'http://192.168.0.149:5000',
+  //'http://localhost:5000', // Fallback to localhost
+];
 
-const SERVER_URL = process.env.NEXT_PUBLIC_SOCKET_SERVER_URL || 'http://localhost:5000';
-
-export default function SocketProvider({ children }: Props) {
+export default function SocketProvider({ children }: { children: React.ReactNode }) {
   const socketRef = useRef<Socket | null>(null);
   const [fixtureData, setFixtureData] = useState<FixtureData[] | null>(null);
   const [scene, setScene] = useState<string | null>(null);
+  const serverIndex = useRef(0);
 
   useEffect(() => {
-    // Initialize socket connection on first render
-    socketRef.current = io(SERVER_URL, { transports: ['websocket'] });
-
-    socketRef.current.on('connect', () => {
-      console.log(`Connected to socket server: ${socketRef.current?.id}`);
-    });
-
-    socketRef.current.on('disconnect', (reason) => {
-      console.log(`Disconnected: ${reason}`);
-    });
-
-    socketRef.current.on('data', (data) => {
-      setFixtureData(data.message); // Update fixture data state
-    });
-
-    socketRef.current.on('event', (data) => {
-      console.log('Received event:', data);
-      if (data.event_type === 'scene') {
-        setScene(data.name); // Update fixture data state
+    const tryNextServer = () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
       }
-    });
+
+      const serverUrl = SERVER_URLS[serverIndex.current];
+      console.log(`Trying to connect to: ${serverUrl}`);
+
+      socketRef.current = io(serverUrl, { transports: ['websocket'], reconnection: false });
+
+      socketRef.current.on('connect', () => {
+        console.log(`Connected to ${serverUrl}`);
+      });
+
+      socketRef.current.on('connect_error', () => {
+        console.warn(`Connection failed: ${serverUrl}`);
+        serverIndex.current = (serverIndex.current + 1) % SERVER_URLS.length;
+        let waitTimeMs = 1; 
+        if (serverIndex.current === 0) {
+          waitTimeMs = 3000; // 5 seconds for the first retry
+        }
+        setTimeout(tryNextServer, waitTimeMs); // Try the next server after 2 seconds
+      });
+
+      socketRef.current.on('disconnect', (reason) => {
+        console.log(`Disconnected: ${reason}`);
+      });
+
+      socketRef.current.on('data', (data) => {
+        setFixtureData(data.message);
+      });
+
+      socketRef.current.on('event', (data) => {
+        console.log('Received event:', data);
+        if (data.event_type === 'scene') {
+          setScene(data.name);
+        }
+      });
+    };
+
+    tryNextServer();
 
     return () => {
       socketRef.current?.disconnect();
     };
   }, []);
 
-  // Function to send events from any component
   const sendEvent = (event: string, data: any) => {
     if (socketRef.current) {
       socketRef.current.emit(event, data);

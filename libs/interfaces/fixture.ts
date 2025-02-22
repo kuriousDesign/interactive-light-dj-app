@@ -9,6 +9,13 @@ export interface FixtureRGBW {
     b: number;
     w: number;
 }
+
+export interface FixtureControlProps {
+    id: number;
+    controlType: string;
+    cfg: FixtureCfg;
+}
+
   
 export interface FixtureCfg {
     // address: number;
