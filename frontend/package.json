@@ -9,15 +9,20 @@
   },
   "scripts": {
     "dev": "next dev -p 80",
-    "backend": "node server/server.ts",
+    "backend": "node ../backend/server.ts",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 80",
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroui/react": "^2.7.2",
+    "@heroui/slider": "^2.4.11",
+    "@heroui/system": "^2.4.10",
+    "@heroui/theme": "^2.4.9",
     "@uiw/react-color-shade-slider": "^2.3.4",
     "@uiw/react-color-wheel": "^2.3.4",
     "express": "^4.21.2",
+    "framer-motion": "^12.4.7",
     "next": "15.1.6",
     "rclnodejs": "^0.29.0",
     "react": "^19.0.0",

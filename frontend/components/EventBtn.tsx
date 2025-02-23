@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react';
-import Wheel from "@uiw/react-color-wheel";
-import ShadeSlider from '@uiw/react-color-shade-slider';
-import { ColorResult, hsvaToRgba } from '@uiw/color-convert';
+import React, { useEffect, useContext } from 'react';
 import { SocketContext } from '@/contexts/SocketProvider';
 import { FixtureControlProps } from '@libs/interfaces/fixture';
+import { Button } from "@heroui/react";
 
 
-const FixtureControlRGBW = ({ id, controlType, cfg }: FixtureControlProps) => {
+const EventBtn = ({ id, controlType, cfg }: FixtureControlProps) => {
     // const [hsva, setHsva] = useState({ h: 214, s: 43, v: 100, a: 1 });
     const { sendEvent } = useContext(SocketContext);
-    const { label, position } = cfg;
+    const { label } = cfg;
     const dummyRGBW = { r: 255, g: 0, b: 0, w: 0 }; // Dummy RGBW values
 
     const handleClick = () => {
@@ -23,16 +21,13 @@ const FixtureControlRGBW = ({ id, controlType, cfg }: FixtureControlProps) => {
     }, []); // Dependency array ensures it updates when hsva changes
 
     return (
-        <div 
-            className='absolute w-max'
-            style={{ left: position.x, top: position.y }}
+        <Button
+            color="primary"
+            onPress={handleClick}
         >
-            <button
-                className="bg-blue-500 w-20 h-14 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={handleClick}
-            >{label}</button>
-        </div>
+            {label}
+        </Button>
     );
 };
 
-export default FixtureControlRGBW;
+export default EventBtn;

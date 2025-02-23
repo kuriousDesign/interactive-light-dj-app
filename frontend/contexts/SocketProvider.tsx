@@ -2,14 +2,14 @@
 
 import { createContext, useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { FixtureData } from '@libs/types/fixture';
+import { FixtureRGBW } from '@libs/interfaces/fixture';
 
 export const SocketContext = createContext<{
   socket: Socket | null;
-  fixtureData: FixtureData[] | null;
+  fixtureData: FixtureRGBW[] | null;
   scene: string | null;
-  setFixtureData: React.Dispatch<React.SetStateAction<FixtureData[] | null>>;
-  sendEvent: (event: string, data: any) => void;
+  setFixtureData: React.Dispatch<React.SetStateAction<FixtureRGBW[] | null>>;
+  sendEvent: (event: string, data: unknown) => void;
 }>({
   socket: null,
   fixtureData: null,
@@ -28,7 +28,7 @@ const SERVER_URLS = [
 
 export default function SocketProvider({ children }: { children: React.ReactNode }) {
   const socketRef = useRef<Socket | null>(null);
-  const [fixtureData, setFixtureData] = useState<FixtureData[] | null>(null);
+  const [fixtureData, setFixtureData] = useState<FixtureRGBW[] | null>(null);
   const [scene, setScene] = useState<string | null>(null);
   const serverIndex = useRef(0);
 
@@ -80,11 +80,11 @@ export default function SocketProvider({ children }: { children: React.ReactNode
     };
   }, []);
 
-  const sendEvent = (event: string, data: any) => {
+  const sendEvent = (event: string, data: unknown) => {
     if (socketRef.current) {
       socketRef.current.emit(event, data);
     } else {
-      console.error('Socket is not connected');
+      // console.error('Socket is not connected');
     }
   };
 

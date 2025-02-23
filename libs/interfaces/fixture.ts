@@ -11,6 +11,7 @@ export interface FixtureRGBW {
 }
 
 export interface FixtureControlProps {
+    className?: string; // Add this line to allow passing className
     id: number;
     controlType: string;
     cfg: FixtureCfg;
