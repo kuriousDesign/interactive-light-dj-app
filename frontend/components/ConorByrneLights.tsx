@@ -48,6 +48,17 @@ const ConorByrneLights = () => {
         { label: "Summer", position: { x: 1250, y: y6 } },
     ]
 
+    const sceneBlackoutCfgs:FixtureCfg = { label: "Blackout", position: { x: 25, y: y6 } };
+
+    const sceneBlackoutBtn = (
+        <EventBtn
+            key={999}
+            id = {999}
+            controlType = {'blackout'}
+            cfg={sceneBlackoutCfgs}
+        />
+    );
+
     // Use the useSocket hook to get the fixture data
     //const { fixtureData } = useSocket();
     // const { fixtureData } = useSocketContext();
@@ -117,6 +128,8 @@ const ConorByrneLights = () => {
             cfg={cfg}
         />
     ));
+
+    sceneBtns.push(sceneBlackoutBtn);
 
     return (
         <div className="flex flex-wrap items-center justify-center">

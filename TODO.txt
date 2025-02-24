@@ -1,0 +1,11 @@
+STATUS          DESCRIPTION
+                blackout
+                reduce all fixtures values
+                add fixture breakout for groups
+                add global fade time and invidual fade time
+                add bpm Tap
+                timed transition between scene changes
+                spotify buttons
+                save scenes
+                have controls value be updated from the conor_byrne_controller
+
