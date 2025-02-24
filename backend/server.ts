@@ -12,7 +12,7 @@ const UDP_SEND_HOST = '127.0.0.1';  // Host for sending data (adjust as needed)
 
 // Socket.IO Settings
 const PORT = 5000;                   // Port for Socket.IO server
-const IP_ADDRESS = '192.168.0.149';      // Local IP for the Socket.IO server
+const IP_ADDRESS = '192.168.20.116';      // Local IP for the Socket.IO server
 
 // Create an instance of Express
 const app = express();

@@ -132,7 +132,7 @@ const ConorByrneLights = () => {
             <div className="hidden w-full h-full">
                 {fixtures}
             </div>
-            <div className="flex flex-col gap-1 w-full space-y-4 mb-10">
+            <div className="flex flex-col gap-1 w-full space-y-4 mb-10 ml-10">
                 {groupControls}
             </div>
             <div className="flex h-20 w-full bg-alarm mt-2">

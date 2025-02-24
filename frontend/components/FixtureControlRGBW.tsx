@@ -15,13 +15,14 @@ const FixtureControlRGBW = ({ className, id, controlType, cfg }: FixtureControlP
     const { label } = cfg;
 
     const handleChange = (color: ColorResult) => {
+        color.hsva.s = 100;
         setHsva({ ...hsva, ...color.hsva, v: brightness }); // Ensure v is always synced
         setHsvaDisplay({ ...hsvaDisplay, ...color.hsva, v: 100 });
     };
 
 
     const handleSliderChange = (value) => {
-        console.log("Slider value changed:", value);
+        //console.log("Slider value changed:", value);
         setBrightness(value); // Update brightness
         setHsva((prevHsva) => ({ ...prevHsva, v: value})); // Ensure state updates
     };
@@ -32,13 +33,11 @@ const FixtureControlRGBW = ({ className, id, controlType, cfg }: FixtureControlP
         sendEvent('buttonPress', { controlType, id, color: newRgbColor });
     }, [hsva]); // Dependency array ensures it updates when hsva changes
 
-    console.log('className:', className);
-
     return (
         <div className={`${className} ...otherClasses`}>
-            <div className="flex flex-row gap-4 items-center h-auto w-72">
+            <div className="flex flex-row gap-4 items-center h-auto w-72 ml-8">
+                <div className='w-8'>{""}</div>
                 <Wheel
-     
                     width={125} 
                     height={125}
                     color={hsvaDisplay} 
@@ -47,8 +46,8 @@ const FixtureControlRGBW = ({ className, id, controlType, cfg }: FixtureControlP
                 <Slider
                     className="h-40"
                     aria-label="Brightness"
-                    defaultValue={0.5}
-                    maxValue={1}
+                    defaultValue={123}
+                    maxValue={255}
                     minValue={0}
                     orientation="vertical"
                     size="lg"
