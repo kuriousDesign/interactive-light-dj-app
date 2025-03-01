@@ -20,8 +20,10 @@ export const SocketContext = createContext<{
 
 // List of possible Socket.IO server addresses
 const SERVER_URLS = [
-  'http://192.168.20.116:5000', // conor byrne coop private
-  'http://robot:5000', //billy's network
+  'http://192.168.20.123:5000', // conor byrne coop private
+  'http://robot.local:5000', //billy's network
+  
+  
   'http://127.0.0.1:5000', // localhost
   'http://192.168.0.149:5000',
   //'http://localhost:5000', // Fallback to localhost
