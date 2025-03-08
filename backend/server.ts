@@ -125,6 +125,21 @@ io.on('connection', (socket) => {
                 udpClient.close();
             });
         }
+        else if (data.controlType === 'masterBrightness') {
+            console.log('Master slider changed:', data.value);
+            const message = Buffer.from(JSON.stringify(data));
+
+            const udpClient = dgram.createSocket('udp4');
+            udpClient.send(message, 0, message.length, UDP_SEND_PORT, UDP_SEND_HOST, (err) => {
+                if (err) {
+                    console.error('Error sending UDP message:', err);
+                } else {
+                    // console.log(`Sent UDP message to ${UDP_SEND_HOST}:${UDP_SEND_PORT}`);
+                }
+                udpClient.close();
+            });
+        }
+
     });
 
     // Handle disconnection

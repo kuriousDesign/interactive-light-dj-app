@@ -1,15 +1,17 @@
 'use client'; // <-- Add this line at the top
 
 //import useSocket from '@/hooks/useSocket'; // Import the custom hook
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { SocketContext } from '@/contexts/SocketProvider'; // Adjust path to match your project structure
 import { FixtureCfg } from '@libs/interfaces/fixture'; // Adjust to your fixture data type
 import FixtureComponent from './FixtureComponent';
 import FixtureControlRGBW from './FixtureControlRGBW';
 import EventBtn from './EventBtn';
+import {Slider} from "@heroui/slider";
 
 
 const ConorByrneLights = () => {
+
     const y1 = 50;
     const y2 = 150;
     const y3 = 0;
@@ -131,8 +133,20 @@ const ConorByrneLights = () => {
 
     sceneBtns.push(sceneBlackoutBtn);
 
+    const [brightness, setBrightness] = useState(100); // useState instead of a let variable
+    useEffect(() => {
+        const controlType = 'masterBrightness';
+        sendEvent('buttonPress', { controlType, brightness });
+    }, [brightness]); // Dependency array ensures it updates when hsva changes
+    const { sendEvent } = useContext(SocketContext);
+
+    const handleMasterSliderChange = (value) => {
+        //console.log("Slider value changed:", value);
+        setBrightness(value); // Update brightness
+    };
+
     return (
-        <div className="flex flex-wrap items-center justify-center">
+        <div>
             <div className="sticky top-0 z-50 w-full">
                 <div className='w-full text-center mb-0 items-center z-50 bg-secondary'>
                     {'The Byrne'}
@@ -141,20 +155,36 @@ const ConorByrneLights = () => {
                     Scene {scene}
                 </div>
             </div>
-  
-            <div className="hidden w-full h-full">
-                {fixtures}
-            </div>
-            <div className="flex flex-col gap-1 w-full space-y-4 mb-10 ml-10">
-                {groupControls}
-            </div>
-            <div className="flex h-20 w-full bg-alarm mt-2">
-                Scenes
-            </div>
-            <div className="flex flex-wrap gap-4 mt-1 justify-start">
-                {sceneBtns}
-            </div>
+            <div className="flex flex-row items-start ">
 
+                <div className="hidden w-full h-full">
+                    {fixtures}
+                </div>
+                <div className="flex flex-col gap-1 w-full space-y-4 mb-10 ml-10 ">
+                    {groupControls}
+                </div>
+
+                <div className="flex flex-wrap gap-4 mt-1 justify-start">
+                    <div className="flex h-20 w-full bg-alarm mt-2">
+                    Scenes
+                    </div>
+                    {sceneBtns}
+                </div>
+                <div className='hidden'>
+                    <Slider
+                        className="h-40"
+                        aria-label="Brightness"
+                        defaultValue={123}
+                        maxValue={255}
+                        minValue={0}
+                        orientation="vertical"
+                        size="lg"
+                        step={0.5}
+                        onChange={handleMasterSliderChange}
+                    />
+                </div>
+
+            </div>
         </div>
     );
 };

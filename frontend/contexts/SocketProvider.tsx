@@ -20,13 +20,10 @@ export const SocketContext = createContext<{
 
 // List of possible Socket.IO server addresses
 const SERVER_URLS = [
-  'http://192.168.20.123:5000', // conor byrne coop private
-  'http://robot.local:5000', //billy's network
-  
-  
-  'http://127.0.0.1:5000', // localhost
-  'http://192.168.0.149:5000',
-  //'http://localhost:5000', // Fallback to localhost
+  'http://robot.local:5000', //
+  'http://192.168.20.123:5000', // Conor Byrne Coop Private
+  'http://127.0.0.1:5000', // Localhost
+  'http://192.168.0.149:5000', // Another local IP
 ];
 
 export default function SocketProvider({ children }: { children: React.ReactNode }) {
@@ -34,9 +31,12 @@ export default function SocketProvider({ children }: { children: React.ReactNode
   const [fixtureData, setFixtureData] = useState<FixtureRGBW[] | null>(null);
   const [scene, setScene] = useState<string | null>(null);
   const serverIndex = useRef(0);
+  const isConnected = useRef(false);
 
   useEffect(() => {
     const tryNextServer = () => {
+      if (isConnected.current) return; // Stop trying once connected
+
       if (socketRef.current) {
         socketRef.current.disconnect();
       }
@@ -44,24 +44,30 @@ export default function SocketProvider({ children }: { children: React.ReactNode
       const serverUrl = SERVER_URLS[serverIndex.current];
       console.log(`Trying to connect to: ${serverUrl}`);
 
-      socketRef.current = io(serverUrl, { transports: ['websocket'], reconnection: false });
+      socketRef.current = io(serverUrl, { 
+        transports: ['websocket'], 
+        reconnection: false, 
+        timeout: 500 // Set connection timeout to 500ms
+      });
 
       socketRef.current.on('connect', () => {
         console.log(`Connected to ${serverUrl}`);
+        isConnected.current = true; // Mark as connected
       });
 
       socketRef.current.on('connect_error', () => {
         console.warn(`Connection failed: ${serverUrl}`);
         serverIndex.current = (serverIndex.current + 1) % SERVER_URLS.length;
-        let waitTimeMs = 1; 
-        if (serverIndex.current === 0) {
-          waitTimeMs = 3000; // 5 seconds for the first retry
+        
+        if (!isConnected.current) {
+          setTimeout(tryNextServer, 50); // Move to the next server after 50ms
         }
-        setTimeout(tryNextServer, waitTimeMs); // Try the next server after 2 seconds
       });
 
       socketRef.current.on('disconnect', (reason) => {
         console.log(`Disconnected: ${reason}`);
+        isConnected.current = false; // Mark as disconnected and retry
+        setTimeout(tryNextServer, 50); // Retry quickly after disconnect
       });
 
       socketRef.current.on('data', (data) => {
@@ -80,14 +86,13 @@ export default function SocketProvider({ children }: { children: React.ReactNode
 
     return () => {
       socketRef.current?.disconnect();
+      isConnected.current = false; // Reset connection state
     };
   }, []);
 
   const sendEvent = (event: string, data: unknown) => {
     if (socketRef.current) {
       socketRef.current.emit(event, data);
-    } else {
-      // console.error('Socket is not connected');
     }
   };
 

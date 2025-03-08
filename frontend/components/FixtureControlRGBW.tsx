@@ -33,25 +33,28 @@ const FixtureControlRGBW = ({ className, id, controlType, cfg }: FixtureControlP
         sendEvent('buttonPress', { controlType, id, color: newRgbColor });
     }, [hsva]); // Dependency array ensures it updates when hsva changes
 
+    const wheelSize = 135;
+
     return (
         <div className={`${className} ...otherClasses`}>
             <div className="flex flex-row gap-4 items-center h-auto w-72 ml-8">
                 <div className='w-8'>{""}</div>
                 <Wheel
-                    width={125} 
-                    height={125}
+                    width={wheelSize} 
+                    height={wheelSize}
                     color={hsvaDisplay} 
                     onChange={handleChange}
                 />
                 <Slider
-                    className="h-40"
+                    className=""
+                    style={{ height: '135px' }}
                     aria-label="Brightness"
                     defaultValue={123}
                     maxValue={255}
                     minValue={0}
                     orientation="vertical"
                     size="lg"
-                    step={0.01}
+                    step={0.1}
                     onChange={handleSliderChange}
                 />
                 {label}
