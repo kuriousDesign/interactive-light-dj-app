@@ -13,6 +13,7 @@ const FixtureControlRGBW = ({ className, id, controlType, cfg }: FixtureControlP
     const [brightness, setBrightness] = useState(100); // useState instead of a let variable
     const { sendEvent } = useContext(SocketContext);
     const { label } = cfg;
+    const [rgb, setRgb] = useState({ r: 0, g: 0, b: 0, a: 1 });
 
     const handleChange = (color: ColorResult) => {
         color.hsva.s = 100;
@@ -30,6 +31,7 @@ const FixtureControlRGBW = ({ className, id, controlType, cfg }: FixtureControlP
     // useEffect to trigger sendEvent when `hsva` or `brightness` changes
     useEffect(() => {
         const newRgbColor = hsvaToRgba(hsva);
+        setRgb(newRgbColor);
         sendEvent('buttonPress', { controlType, id, color: newRgbColor });
     }, [hsva]); // Dependency array ensures it updates when hsva changes
 
@@ -47,17 +49,30 @@ const FixtureControlRGBW = ({ className, id, controlType, cfg }: FixtureControlP
                 />
                 <Slider
                     className=""
-                    style={{ height: '135px' }}
+                    style={{ height: '140px' }}
                     aria-label="Brightness"
-                    defaultValue={123}
-                    maxValue={255}
+                    defaultValue={30}
+                    maxValue={80}
                     minValue={0}
                     orientation="vertical"
                     size="lg"
                     step={0.1}
                     onChange={handleSliderChange}
                 />
-                {label}
+                <div>
+                    {label}
+                    <div>
+                        r:{rgb.r}
+                    </div>
+                    <div>
+                        g:{rgb.g}
+                    </div>
+                    <div>
+                        b:{rgb.b}
+                    </div>
+                </div>
+
+                
             </div>
         </div>
     );

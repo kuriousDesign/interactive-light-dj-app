@@ -8,6 +8,7 @@ import FixtureComponent from './FixtureComponent';
 import FixtureControlRGBW from './FixtureControlRGBW';
 import EventBtn from './EventBtn';
 import {Slider} from "@heroui/slider";
+import BlackoutBtn from './BlackoutBtn';
 
 
 const ConorByrneLights = () => {
@@ -45,16 +46,17 @@ const ConorByrneLights = () => {
         { label: "RedWhite", position: { x: 375, y: y6 } },
         { label: "Joker", position: { x: 550, y: y6 } },
         { label: "Red", position: { x: 725, y: y6 } },
-        { label: "Blue", position: { x: 900, y: y6 } },
-        { label: "Jibraltar", position: { x: 1075, y: y6 } },
-        { label: "Summer", position: { x: 1250, y: y6 } },
+        { label: "Gnarly", position: { x: 900, y: y6 } },
+        { label: "lowReddish", position: { x: 1075, y: y6 } },
+        { label: "penthouse", position: { x: 1250, y: y6 } },
     ]
 
     const sceneBlackoutCfgs:FixtureCfg = { label: "Blackout", position: { x: 25, y: y6 } };
 
     const sceneBlackoutBtn = (
-        <EventBtn
+        <BlackoutBtn
             key={999}
+            className='bg-black'
             id = {999}
             controlType = {'blackout'}
             cfg={sceneBlackoutCfgs}
