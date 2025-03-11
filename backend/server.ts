@@ -38,6 +38,7 @@ function generateFixtureData() {
             g: Math.floor(Math.random() * 256),
             b: Math.floor(Math.random() * 256),
             w: Math.floor(Math.random() * 256),
+            brightness: Math.floor(Math.random() * 101),
         });
     }
     return fixtures;
@@ -46,13 +47,15 @@ function generateFixtureData() {
 // Function to parse incoming UDP bytes into fixture data
 function parseFixtureData(bytes: Buffer) {  // Add ': Buffer'
     const fixtures:FixtureRGBW[] = [];
+    const byteCount = 5;
     for (let i = 0; i < fixtureCount; i++) {
-        const fixtureBytes = bytes.slice(i * 4, i * 4 + 4); // Each fixture has 4 bytes (R, G, B, W)
+        const fixtureBytes = bytes.slice(i * byteCount, i * byteCount + byteCount); // Each fixture has 5 bytes (R, G, B, W, BRIGHTNESS)
         const r = fixtureBytes[0];
         const g = fixtureBytes[1];
         const b = fixtureBytes[2];
         const w = fixtureBytes[3];
-        fixtures.push({ r, g, b, w });
+        const brightness = fixtureBytes[4];
+        fixtures.push({ r, g, b, w, brightness });
     }
     return fixtures;
 }
@@ -158,7 +161,7 @@ server.listen(PORT, IP_ADDRESS, () => {
 const udpServer = dgram.createSocket('udp4');
 
 udpServer.on('message', (msg, rinfo) => {
-    if (msg.length !== 46) {
+    if (msg.length !== 2 + 5 * fixtureCount) {
         console.warn(`Ignoring incomplete UDP message (${msg.length} bytes) from ${rinfo.address}:${rinfo.port}`);
         return; // Ignore messages that are not exactly 44 bytes
     }
