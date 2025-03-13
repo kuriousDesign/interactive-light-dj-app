@@ -7,12 +7,14 @@ import { FixtureRGBW } from '@libs/interfaces/fixture';
 // UDP Settings
 const UDP_PORT = 59999;               // Port for receiving UDP messages
 const UDP_HOST = '0.0.0.0';          // Listen on all available interfaces
+//const UDP_HOST = '192.168.0.73';          // Listen on all available interfaces
 const UDP_SEND_PORT = 59998;          // Additional UDP port for sending data
 const UDP_SEND_HOST = '127.0.0.1';  // Host for sending data (adjust as needed)
 
 // Socket.IO Settings
 const PORT = 5000;                   // Port for Socket.IO server
 const IP_ADDRESS = '0.0.0.0';      // Local IP for the Socket.IO server
+//const IP_ADDRESS = '192.168.0.73'; 
 
 // Create an instance of Express
 const app = express();
@@ -175,7 +177,13 @@ udpServer.on('message', (msg, rinfo) => {
     if (prefix === 'FD') {
         const fixtureData = parseFixtureData(dataPayload);
         io.emit('data', { message: fixtureData });
-    } else if (prefix === 'EV') {
+    } 
+    else if (prefix === 'GD') {
+        // Handle Group Data prefix if needed
+        const groupData = parseFixtureData(dataPayload);
+        io.emit('groupData', { message: groupData });
+    }
+    else if (prefix === 'EV') {
         // Handle MD prefix if needed
         try {
             const jsonData = JSON.parse(dataPayload.toString());
