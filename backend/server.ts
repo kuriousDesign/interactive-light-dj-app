@@ -85,8 +85,9 @@ io.on('connection', (socket) => {
 
     // Listen for buttonPress event and handle it
     socket.on('buttonPress', (data) => {
-        if (data.controlType === 'groupSet') {
-            console.log('Group button pressed:', data.id, data.color);
+        if (data.controlType === 'group' || data.controlType === 'fixture') {
+            console.log(data.controlType, 'button pressed:', data.id, data.color);
+            data.controlType += 'Set';
 
             // Send button press data via UDP to additional port
             const message = Buffer.from(JSON.stringify(data));
