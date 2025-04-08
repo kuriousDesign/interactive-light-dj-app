@@ -184,6 +184,10 @@ udpServer.on('message', (msg, rinfo) => {
         const fixtureData = parseFixtureData(dataPayload);
         io.emit('fixtureData', { message: fixtureData });
     } 
+    else if (prefix === 'RF') {
+        const fixtureData = parseFixtureData(dataPayload);
+        io.emit('rawFixtureDataRgb', { message: fixtureData });
+    }
     else if (prefix === 'GD') {
         // Handle Group Data prefix if needed
         const groupData = parseFixtureData(dataPayload);
