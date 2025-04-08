@@ -9,6 +9,7 @@ export interface FixtureRGBW {
     b: number;
     w: number;
     brightness: number;
+    controlIsActive: boolean;
 }
 
 export interface FixtureControlProps {
